@@ -1,0 +1,264 @@
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #e9ecf1;
+  color: #1d2530;
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 290px 1fr;
+  min-height: 100vh;
+}
+
+/* ======== Control panel ======== */
+.panel {
+  background: linear-gradient(180deg, #2a313e, #1a1f29);
+  color: #e8ecf1;
+  padding: 14px 12px;
+  border-right: 2px solid #0e131b;
+  overflow-y: auto;
+  max-height: 100vh;
+}
+
+.panel h1 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  text-align: center;
+  letter-spacing: 1px;
+  color: #cfd6e0;
+}
+
+.display {
+  background: #0c1218;
+  border: 2px solid #3a4250;
+  border-radius: 6px;
+  padding: 8px;
+  margin-bottom: 12px;
+  text-align: center;
+  box-shadow: inset 0 0 12px rgba(0,0,0,0.6);
+}
+.display-label { font-size: 11px; color: #6e7a8a; letter-spacing: 1px; }
+.display-value {
+  font-family: "Consolas", monospace;
+  font-size: 26px;
+  color: #ff5f3b;
+  text-shadow: 0 0 6px rgba(255,95,59,0.6);
+  margin-top: 2px;
+}
+
+.btn {
+  width: 100%;
+  margin-bottom: 6px;
+  padding: 8px 10px;
+  border: 1px solid #0a0e15;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #3a4456, #232a36);
+  color: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn:hover { background: linear-gradient(180deg, #455067, #2a3140); }
+.btn.green { background: linear-gradient(180deg, #2f8f4d, #195a2f); }
+.btn.red   { background: linear-gradient(180deg, #b8392f, #6f1e18); }
+
+.row { display: flex; gap: 6px; }
+.row .btn { margin-bottom: 6px; }
+
+.led {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: #2a3140;
+  border: 1px solid #0a0e15;
+  box-shadow: inset 0 0 4px rgba(0,0,0,0.6);
+  flex-shrink: 0;
+}
+.btn.on .led {
+  background: #4ee07f;
+  box-shadow: 0 0 8px #4ee07f, inset 0 0 4px #fff;
+}
+.btn.disabled { opacity: 0.5; cursor: not-allowed; }
+
+.group {
+  border: 1px solid #3b4357;
+  border-radius: 6px;
+  padding: 6px 8px;
+  margin: 8px 0;
+  background: rgba(255,255,255,0.02);
+}
+.group-title {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: #8c98aa;
+  margin-bottom: 4px;
+}
+
+.metric {
+  display: flex;
+  justify-content: space-between;
+  margin: 3px 0;
+  font-size: 12px;
+}
+.metric strong { font-family: "Consolas", monospace; color: #fff; }
+
+/* slider */
+.slider-row {
+  display: block;
+  font-size: 11px;
+  color: #cfd6e0;
+  margin: 6px 0 2px;
+}
+.slider-row span {
+  color: #ffd166;
+  font-family: "Consolas", monospace;
+  font-weight: bold;
+}
+input[type=range] {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  background: #0c1218;
+  border: 1px solid #3a4250;
+  border-radius: 4px;
+  margin-bottom: 6px;
+  outline: none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px; height: 14px;
+  background: #ffd166;
+  border: 1px solid #0a0e15;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 4px rgba(255,209,102,0.6);
+}
+input[type=range]::-moz-range-thumb {
+  width: 14px; height: 14px;
+  background: #ffd166;
+  border: 1px solid #0a0e15;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* sequence step indicators */
+.step {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  margin: 3px 0;
+  color: #b8c0cc;
+}
+.step .dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: #2a3140;
+  border: 1px solid #0a0e15;
+  flex-shrink: 0;
+}
+.step.done { color: #88f28a; }
+.step.done .dot { background: #4ee07f; box-shadow: 0 0 6px #4ee07f; }
+.step.active { color: #ffd166; }
+.step.active .dot { background: #ffd166; box-shadow: 0 0 6px #ffd166; }
+
+.hint {
+  margin-top: 8px;
+  padding: 6px 8px;
+  font-size: 11px;
+  color: #ffd166;
+  background: rgba(255, 209, 102, 0.08);
+  border: 1px solid rgba(255, 209, 102, 0.3);
+  border-radius: 4px;
+  min-height: 14px;
+}
+
+.ok    { color: #88f28a !important; }
+.alarm { color: #ff7474 !important; animation: blink 0.7s linear infinite; }
+@keyframes blink { 50% { opacity: 0.3; } }
+
+/* ======== Plant view ======== */
+.plant {
+  padding: 12px 16px;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,0.6), transparent 60%),
+    linear-gradient(180deg, #f4f5f7, #d8dce4);
+}
+.plant h2 {
+  margin: 0 0 6px;
+  font-size: 22px;
+  letter-spacing: 1px;
+  color: #1d2530;
+}
+#diagram {
+  width: 100%;
+  height: calc(100vh - 60px);
+  background: #fbfcfe;
+  border: 1px solid #aab1bc;
+  border-radius: 6px;
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.05);
+}
+
+.label { fill: #1d2530; font: bold 13px "Segoe UI", Arial, sans-serif; }
+.label.small { font: 11px "Segoe UI", Arial, sans-serif; font-weight: 600; }
+.display-mini { fill: #ff5f3b; font: bold 14px "Consolas", monospace; }
+
+/* ======== Pipes ======== */
+.pipe {
+  stroke-width: 14;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  stroke: #b8c0cc;
+}
+.pipe.milk      { stroke: #f5e7a8; }
+.pipe.milk-warm { stroke: #f1c97a; }
+.pipe.milk-hot  { stroke: #ff8b52; }
+.pipe.milk-cold { stroke: #9fd3ff; }
+.pipe.water-hot  { stroke: #e23a3a; }
+.pipe.water-cold { stroke: #1f5cd1; }
+.pipe.off { stroke: #cfd5dd !important; opacity: 0.45; }
+
+.pipe.flow { stroke-dasharray: 18 22; animation: flow 1.2s linear infinite; }
+.pipe.flow.reverse { animation-direction: reverse; }
+.pipe.flow.fast    { animation-duration: 0.6s; }
+.pipe.flow.slow    { animation-duration: 2.0s; }
+
+@keyframes flow { to { stroke-dashoffset: -40; } }
+
+.inner-flow {
+  stroke-dasharray: 14 18;
+  stroke-width: 8;
+  animation: flow 1.2s linear infinite;
+  opacity: 0;
+}
+.inner-flow.on { opacity: 1; }
+
+/* ======== Valves ======== */
+.valve circle { transition: fill 0.25s; }
+.valve .valve-handle { transition: transform 0.3s; transform-origin: center; transform-box: fill-box; }
+.valve.open  circle { fill: #4ee07f; }
+.valve.open  .valve-handle { transform: rotate(45deg); }
+.valve.closed circle { fill: #e25555; }
+
+/* ======== Pumps ======== */
+.blade { transform-box: fill-box; transform-origin: center; }
+.blade.spin { animation: spin 0.5s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ======== Flame & LEDs ======== */
+#flame { transform-box: fill-box; transform-origin: center; opacity: 0; transition: opacity 0.3s; }
+#flame.on { opacity: 1; animation: flicker 0.25s steps(2) infinite; }
+@keyframes flicker {
+  0%   { transform: scale(1, 1); }
+  50%  { transform: scale(1.05, 0.95); }
+  100% { transform: scale(0.97, 1.05); }
+}
+#refriLed.on { fill: #4ee07f; filter: drop-shadow(0 0 4px #4ee07f); }

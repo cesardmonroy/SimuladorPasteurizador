@@ -1,0 +1,47 @@
+# Claude Code
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+*.egg-info/
+
+# C# / Unity
+[Bb]in/
+[Oo]bj/
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+*.csproj.user
+*.sln.docstates
+*.userprefs
+*.pidb
+*.suo
+*.user
+
+# Web
+node_modules/
+dist/
+.cache/
+
+# Logs
+*.log
