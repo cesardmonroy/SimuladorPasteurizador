@@ -69,6 +69,10 @@
         <div class="metric"><span>T. Retencion</span><strong id="holdTemp">20.0 C</strong></div>
         <div class="metric"><span>T. Salida</span><strong id="outTemp">10.0 C</strong></div>
         <div class="metric"><span>Tiempo Retencion</span><strong id="holdTime">0.0 s</strong></div>
+        <div class="metric"><span>Presion Vapor</span><strong id="psi">0 PSI</strong></div>
+        <div class="metric"><span>Nivel Pulmon</span><strong id="pulmonLvl">80 %</strong></div>
+        <div class="metric"><span>Mezcla V/A</span><strong>60% / 40%</strong></div>
+        <div class="metric"><span>Trampa Vapor</span><strong id="trapState">CERRADA</strong></div>
         <div class="metric"><span>Alarma</span><strong id="alarm" class="ok">OK</strong></div>
         <div class="metric"><span>CIP</span><strong id="cip">N/A</strong></div>
       </div>
@@ -104,6 +108,10 @@
             <stop offset="1" stop-color="#2b333d"/>
           </linearGradient>
         </defs>
+
+        <!-- Makeup water + pulmon-caldera bridge (drawn first) -->
+        <path id="pipeMakeup"   class="pipe water-cold" d="M1260 700 L1220 700 L1220 560"/>
+        <path id="pipePulmonOut" class="pipe water-cold" d="M1180 480 L1180 430 L1180 360 L1150 360"/>
 
         <!-- =========================  PIPES  ========================= -->
         <path id="pipeInlet"         class="pipe milk"       d="M40 60 L160 60 L160 290"/>
@@ -270,6 +278,44 @@
           <circle r="12" fill="#cdd4de" stroke="#1c232c" stroke-width="2"/>
           <path class="valve-handle" d="M-8,0 L8,0 M0,-8 L0,8" stroke="#1c232c" stroke-width="3"/>
           <text x="18" y="5" class="label small">V. LLENADO</text>
+        </g>
+
+        <!-- =========================  TANQUE PULMON ========================= -->
+        <g id="pulmonGroup">
+          <rect x="1190" y="430" width="60" height="140" rx="4" fill="url(#gradTank)" stroke="#5b6573" stroke-width="2"/>
+          <rect x="1198" y="442" width="14" height="120" fill="#0c1218" stroke="#3a4250" stroke-width="1"/>
+          <rect id="pulmonFill" x="1199" y="466" width="12" height="96" fill="#9fd3ff"/>
+          <!-- Linea de Nivel Optimo a 70% -->
+          <line x1="1196" y1="478" x2="1252" y2="478" stroke="#e2a13a" stroke-width="2" stroke-dasharray="4 3"/>
+          <text x="1196" y="475" class="label small" fill="#a96e10">Nivel Optimo</text>
+          <text x="1190" y="425" class="label small" text-anchor="start">TANQUE PULMON</text>
+          <text x="1190" y="590" class="label small">(60% agua + 40% vapor*)</text>
+        </g>
+
+        <!-- =========================  TRAMPA DE VAPOR ========================= -->
+        <g id="trapGroup" transform="translate(880 540)">
+          <rect x="-18" y="-14" width="36" height="28" rx="3" fill="#cdd4de" stroke="#1c232c" stroke-width="2"/>
+          <circle cx="0" cy="0" r="8" fill="#5b6573" stroke="#1c232c" stroke-width="1.5"/>
+          <text id="trapDrip" x="0" y="34" text-anchor="middle" font-size="14" fill="#1f5cd1" opacity="0">&#x2022;</text>
+          <text x="-12" y="-22" class="label small">TRAMPA DE VAPOR</text>
+        </g>
+
+        <!-- =========================  GAUGE DE PRESION (PSI) ========================= -->
+        <g id="psiGauge" transform="translate(1110 220)">
+          <circle r="22" fill="#fbfcfe" stroke="#1c232c" stroke-width="2"/>
+          <circle r="3" fill="#1c232c"/>
+          <line id="psiNeedle" x1="0" y1="0" x2="0" y2="-16" stroke="#e23a3a" stroke-width="2"/>
+          <text x="0" y="38" text-anchor="middle" class="label small">PSI</text>
+          <text id="psiText" x="0" y="-30" text-anchor="middle" class="display-mini">0</text>
+        </g>
+
+        <!-- =========================  PIPE LABELS  ========================= -->
+        <g class="pipe-labels">
+          <text x="305" y="455" class="label small" fill="#7a5a10">LECHE 1&#xb0;</text>
+          <text x="395" y="115" class="label small" fill="#1c4a86">LECHE 2&#xb0; PASTEURIZADA</text>
+          <text x="900" y="150" class="label small" fill="#7a1a1a">VAPOR 1&#xb0; (saturado)</text>
+          <text x="780" y="410" class="label small" fill="#7a1a1a">Vapor condensado caliente</text>
+          <text x="290" y="595" class="label small" fill="#7a5a10">RETORNO (desviacion)</text>
         </g>
 
       </svg>

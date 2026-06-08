@@ -17,6 +17,12 @@ const FILL_RATE    = 1.5;     // L/s velocidad de llenado del tanque
 const HOLDUP_VOL   = 5.0;     // L  volumen residual en tuberias + intercambiador (perdida al cerrar lote)
 const EVAP_FACTOR  = 0.002;   // 0.2% evaporacion en calentamiento (literatura HTST 0.1-0.3%)
 
+// Vapor / Tanque pulmon (observaciones Tulio Martinez)
+const PULMON_OPTIMAL = 0.70;  // nivel optimo (mezcla 60/40, marca naranja)
+const PULMON_DRAIN   = 0.012; // fraccion/s consumo cuando bomba vapor ON
+const MAKEUP_RATE    = 0.05;  // fraccion/s reposicion automatica
+const STEAM_PSI_MAX  = 30;    // PSI nominal de vapor saturado
+
 const state = {
   energyOn: false, running: false, mode: "production",
   fillOn: false, pumpHotOn: false, pumpColdOn: false, pumpMilkOn: false,
@@ -26,6 +32,12 @@ const state = {
 
   vProd: false, vRet: false, vDes: false,
   alarm: false, lowTempAcc: 0,
+
+  // Tanque pulmon + trampa vapor + presion
+  pulmonLevel: 0.80,
+  makeupOn: false,
+  steamPsi: 0,
+  trapOpen: false,
 
   // ---------- volumenes (L) ----------
   tankInVol:  0,
@@ -71,6 +83,11 @@ const el = {
   alarm: $("alarm"), cip: $("cip"),
 
   vProd: $("vProd"), vRet: $("vRet"), vDes: $("vDes"),
+  psi: $("psi"), pulmonLvl: $("pulmonLvl"), trapState: $("trapState"),
+  pulmonFill: $("pulmonFill"),
+  psiNeedle: $("psiNeedle"), psiText: $("psiText"),
+  trapDrip: $("trapDrip"),
+  pipeMakeup: $("pipeMakeup"), pipePulmonOut: $("pipePulmonOut"),
 
   mFilled: $("mFilled"), mFinal: $("mFinal"),
   mRecirc: $("mRecirc"), mEvap: $("mEvap"),
@@ -244,9 +261,29 @@ function step(dt) {
     return;
   }
 
-  // ---------- caldera
-  const tBoilerTarget = state.pumpHotOn ? 95 : 25;
+  // ---------- tanque pulmon y reposicion automatica
+  if (state.pumpHotOn) {
+    // consumo proporcional al uso de vapor
+    state.pulmonLevel = Math.max(0, state.pulmonLevel - PULMON_DRAIN * dt);
+  }
+  // Make-up: si baja del nivel optimo, abre valvula y rellena con agua a T ambiente
+  state.makeupOn = state.pulmonLevel < PULMON_OPTIMAL;
+  if (state.makeupOn) {
+    state.pulmonLevel = Math.min(1.0, state.pulmonLevel + MAKEUP_RATE * dt);
+  }
+
+  // ---------- caldera (necesita agua del pulmon + presion PSI)
+  const haveWater     = state.pulmonLevel > 0.05;
+  const boilerActive  = state.pumpHotOn && haveWater;
+  const tBoilerTarget = boilerActive ? 95 : 25;
   state.tempBoiler += (tBoilerTarget - state.tempBoiler) * Math.min(1, 0.4 * dt);
+
+  // Presion del vapor saturado (kPa->PSI escalado; sube con T caldera)
+  const psiTarget = boilerActive ? STEAM_PSI_MAX * Math.min(1, (state.tempBoiler-30)/65) : 0;
+  state.steamPsi += (psiTarget - state.steamPsi) * Math.min(1, 0.5 * dt);
+
+  // Trampa de vapor: abre (deja salir condensado) cuando hay vapor activo y T_heat > 60
+  state.trapOpen = boilerActive && state.tempHeat > 60;
 
   // ---------- intercambiador
   let heatTarget = 20;
@@ -371,6 +408,27 @@ function renderUi() {
   el.holdTime.textContent    = `${state.holdTimer.toFixed(1)} s`;
   el.retDisplay.textContent  = state.tempHold.toFixed(0);
 
+  // Tanque pulmon, manometro PSI y trampa de vapor
+  el.psi      .textContent = `${state.steamPsi.toFixed(1)} PSI`;
+  el.pulmonLvl.textContent = `${(state.pulmonLevel*100).toFixed(0)} %`;
+  el.trapState.textContent = state.trapOpen ? "DRENANDO" : "CERRADA";
+  el.trapState.className   = state.trapOpen ? "ok" : "";
+
+  // PSI gauge: aguja de -120 (0 PSI) a +120 grados (max)
+  const psiFrac = Math.min(1, state.steamPsi / STEAM_PSI_MAX);
+  el.psiNeedle.setAttribute("transform", `rotate(${-120 + psiFrac * 240})`);
+  el.psiText.textContent = state.steamPsi.toFixed(0);
+
+  // Pulmon fill: rect base x=1199 y=442 h=120 (interior 1199..1213, 442..562)
+  const pH = 120 * Math.max(0, Math.min(1, state.pulmonLevel));
+  el.pulmonFill.setAttribute("y", (442 + 120 - pH).toFixed(1));
+  el.pulmonFill.setAttribute("height", pH.toFixed(1));
+  // Color del fill segun mezcla: por debajo del optimo = azul (mas agua); arriba = mezcla 60/40 (violeta)
+  el.pulmonFill.setAttribute("fill", state.pulmonLevel < PULMON_OPTIMAL ? "#9fd3ff" : "#c466ff");
+
+  // Trampa: gotita visible cuando drena
+  el.trapDrip.classList.toggle("on", state.trapOpen);
+
   // metricas de lote
   el.mFilled.textContent = `${state.vFilled.toFixed(1)} L`;
   el.mFinal .textContent = `${state.vFinal .toFixed(1)} L`;
@@ -434,6 +492,10 @@ function renderUi() {
   setPipe(el.pipeHotSupply, "water-hot", state.pumpHotOn);
   setPipe(el.pipeHotReturn, "water-hot", state.pumpHotOn);
   setPipe(el.pipeHotBack,   "water-hot", state.pumpHotOn);
+
+  // Makeup (agua fria reposicion al pulmon) y pulmon->caldera
+  setPipe(el.pipeMakeup,    "water-cold", state.makeupOn);
+  setPipe(el.pipePulmonOut, "water-cold", state.pumpHotOn && state.pulmonLevel > 0.05);
   setPipe(el.pipeCold,       "water-cold", state.pumpColdOn);
   setPipe(el.pipeColdReturn, "water-cold", state.pumpColdOn);
 

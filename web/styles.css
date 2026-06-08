@@ -262,3 +262,15 @@ input[type=range]::-moz-range-thumb {
   100% { transform: scale(0.97, 1.05); }
 }
 #refriLed.on { fill: #4ee07f; filter: drop-shadow(0 0 4px #4ee07f); }
+
+/* Trampa de vapor: gotita cayendo cuando libera condensado */
+#trapDrip.on { animation: drip 1.4s linear infinite; }
+@keyframes drip {
+  0%   { opacity: 0; transform: translateY(0); }
+  20%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(20px); }
+}
+
+/* Aguja del manometro PSI */
+#psiNeedle { transform-origin: bottom center; transform-box: fill-box; transition: transform 0.4s; }
+
