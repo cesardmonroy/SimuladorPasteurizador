@@ -31,6 +31,37 @@ body {
   color: #cfd6e0;
 }
 
+/* Separadores de zona INFO / CONTROLES */
+.section-header {
+  margin: 14px 0 8px;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-align: center;
+  border-radius: 4px;
+  position: relative;
+}
+.section-header.info {
+  background: linear-gradient(90deg, transparent, rgba(100,167,255,0.25), transparent);
+  color: #9fd3ff;
+  border-top: 1px solid rgba(100,167,255,0.4);
+  border-bottom: 1px solid rgba(100,167,255,0.4);
+}
+.section-header.action {
+  background: linear-gradient(90deg, transparent, rgba(78,224,127,0.25), transparent);
+  color: #88f28a;
+  border-top: 1px solid rgba(78,224,127,0.4);
+  border-bottom: 1px solid rgba(78,224,127,0.4);
+}
+
+/* Grupos de controles con borde verde para distinguirlos */
+.group.control-group {
+  border-color: rgba(78,224,127,0.35);
+  background: rgba(78,224,127,0.04);
+}
+.group.control-group .group-title { color: #aed8b0; }
+
 .display {
   background: #0c1218;
   border: 2px solid #3a4250;
