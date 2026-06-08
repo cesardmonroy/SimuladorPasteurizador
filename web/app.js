@@ -408,10 +408,10 @@ function renderUi() {
   el.holdTime.textContent    = `${state.holdTimer.toFixed(1)} s`;
   el.retDisplay.textContent  = state.tempHold.toFixed(0);
 
-  // Tanque pulmon, manometro PSI y trampa de vapor
-  el.psi      .textContent = `${state.steamPsi.toFixed(1)} PSI`;
-  el.pulmonLvl.textContent = `${(state.pulmonLevel*100).toFixed(0)} %`;
-  el.trapState.textContent = state.trapOpen ? "DRENANDO" : "CERRADA";
+  // Tanque pulmon, manometro PSI y trampa de vapor (topbar compacto)
+  el.psi      .textContent = state.steamPsi.toFixed(1);
+  el.pulmonLvl.textContent = `${(state.pulmonLevel*100).toFixed(0)}%`;
+  el.trapState.textContent = state.trapOpen ? "DRENA" : "CERR";
   el.trapState.className   = state.trapOpen ? "ok" : "";
 
   // PSI gauge: aguja de -120 (0 PSI) a +120 grados (max)
@@ -442,17 +442,17 @@ function renderUi() {
     el.mYield.textContent = "-- %";
   }
 
-  // valvulas (texto panel)
-  el.vProd.textContent = state.vProd ? "ABIERTA" : "CERRADA";
-  el.vRet .textContent = state.vRet  ? "ABIERTA" : "CERRADA";
-  el.vDes .textContent = state.vDes  ? "ABIERTA" : "CERRADA";
+  // valvulas (topbar compacto)
+  el.vProd.textContent = state.vProd ? "ABR" : "CERR";
+  el.vRet .textContent = state.vRet  ? "ABR" : "CERR";
+  el.vDes .textContent = state.vDes  ? "ABR" : "CERR";
   el.vProd.className = state.vProd ? "ok" : "";
   el.vRet .className = state.vRet  ? "ok" : "";
   el.vDes .className = state.vDes  ? "ok" : "";
 
-  // alarma
+  // alarma (estado grande)
   el.alarm.textContent = state.alarm ? "ALARMA" : "OK";
-  el.alarm.className   = state.alarm ? "alarm"  : "ok";
+  el.alarm.className   = state.alarm ? "alarm-big alarm" : "alarm-big ok";
 
   // CIP
   if (state.mode === "cip" && state.cipStep < CIP_STEPS.length)

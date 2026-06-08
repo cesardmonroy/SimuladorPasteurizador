@@ -1,149 +1,206 @@
 * { box-sizing: border-box; }
 
-body {
+html, body {
   margin: 0;
+  height: 100vh;
+  overflow: hidden;
   font-family: "Segoe UI", Arial, sans-serif;
-  background: #e9ecf1;
+  background: #1a1f29;
   color: #1d2530;
 }
 
+/* =========================================================
+   LAYOUT GRID FIJO (sin scroll)
+   ========================================================= */
 .app {
   display: grid;
-  grid-template-columns: 290px 1fr;
-  min-height: 100vh;
+  grid-template-columns: 220px 1fr;
+  grid-template-rows: 110px 1fr;
+  grid-template-areas:
+    "topbar  topbar"
+    "panel   plant";
+  height: 100vh;
+  width: 100vw;
 }
 
-/* ======== Control panel ======== */
+.topbar { grid-area: topbar; }
+.panel  { grid-area: panel;  }
+.plant  { grid-area: plant;  }
+
+/* =========================================================
+   TOPBAR INFORMATIVO (horizontal)
+   ========================================================= */
+.topbar {
+  display: flex;
+  gap: 6px;
+  padding: 6px 8px;
+  background: linear-gradient(180deg, #232a36, #1a1f29);
+  border-bottom: 2px solid #0e131b;
+  overflow: hidden;
+}
+
+.tile {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid #3b4357;
+  border-radius: 5px;
+  padding: 4px 8px;
+  color: #e8ecf1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+.tile-title {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: #8c98aa;
+  margin-bottom: 3px;
+  font-weight: bold;
+}
+
+.tile-temp { flex: 0 0 150px; }
+.tile-temp .display-value {
+  font-family: "Consolas", monospace;
+  font-size: 24px;
+  color: #ff5f3b;
+  text-shadow: 0 0 6px rgba(255,95,59,0.6);
+  background: #0c1218;
+  border: 1px solid #3a4250;
+  border-radius: 4px;
+  padding: 2px 6px;
+  text-align: center;
+}
+
+.tile-seq { flex: 1 1 220px; min-width: 220px; }
+.steps-horizontal {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+}
+.steps-horizontal .step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 10px;
+  color: #b8c0cc;
+}
+.steps-horizontal .step .step-lbl {
+  font-size: 9px;
+  white-space: nowrap;
+}
+.steps-horizontal .step .dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #2a3140;
+  border: 1px solid #0a0e15;
+}
+.steps-horizontal .step.done       { color: #88f28a; }
+.steps-horizontal .step.done .dot  { background: #4ee07f; box-shadow: 0 0 6px #4ee07f; }
+.steps-horizontal .step.active     { color: #ffd166; }
+.steps-horizontal .step.active .dot{ background: #ffd166; box-shadow: 0 0 6px #ffd166; }
+
+.tile-grid { flex: 1 1 180px; }
+.kv-grid {
+  display: grid;
+  grid-template-columns: auto 1fr auto 1fr auto 1fr;
+  gap: 1px 6px;
+  font-size: 11px;
+}
+.kv-grid div  { color: #8c98aa; }
+.kv-grid strong {
+  font-family: "Consolas", monospace;
+  color: #fff;
+  font-weight: 600;
+}
+
+.tile-alarm { flex: 0 0 80px; }
+.alarm-big {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  padding: 8px;
+  border-radius: 4px;
+  background: #0c1218;
+  border: 1px solid #3a4250;
+}
+.alarm-big.ok    { color: #88f28a; }
+.alarm-big.alarm { color: #ff7474; background: rgba(255,116,116,0.15); animation: blink 0.7s linear infinite; }
+
+@keyframes blink { 50% { opacity: 0.4; } }
+
+/* =========================================================
+   PANEL DE CONTROLES (columna izquierda, fija, sin scroll)
+   ========================================================= */
 .panel {
   background: linear-gradient(180deg, #2a313e, #1a1f29);
   color: #e8ecf1;
-  padding: 14px 12px;
+  padding: 8px 8px;
   border-right: 2px solid #0e131b;
-  overflow-y: auto;
-  max-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.panel h1 {
-  margin: 0 0 12px;
-  font-size: 18px;
-  text-align: center;
-  letter-spacing: 1px;
-  color: #cfd6e0;
+.ctrl-block {
+  border: 1px solid #3b4357;
+  border-radius: 5px;
+  padding: 6px 7px;
+  background: rgba(255,255,255,0.02);
 }
-
-/* Separadores de zona INFO / CONTROLES */
-.section-header {
-  margin: 14px 0 8px;
-  padding: 6px 10px;
-  font-size: 11px;
+.ctrl-title {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: #8c98aa;
+  margin-bottom: 5px;
   font-weight: bold;
-  letter-spacing: 2px;
-  text-align: center;
-  border-radius: 4px;
-  position: relative;
-}
-.section-header.info {
-  background: linear-gradient(90deg, transparent, rgba(100,167,255,0.25), transparent);
-  color: #9fd3ff;
-  border-top: 1px solid rgba(100,167,255,0.4);
-  border-bottom: 1px solid rgba(100,167,255,0.4);
-}
-.section-header.action {
-  background: linear-gradient(90deg, transparent, rgba(78,224,127,0.25), transparent);
-  color: #88f28a;
-  border-top: 1px solid rgba(78,224,127,0.4);
-  border-bottom: 1px solid rgba(78,224,127,0.4);
-}
-
-/* Grupos de controles con borde verde para distinguirlos */
-.group.control-group {
-  border-color: rgba(78,224,127,0.35);
-  background: rgba(78,224,127,0.04);
-}
-.group.control-group .group-title { color: #aed8b0; }
-
-.display {
-  background: #0c1218;
-  border: 2px solid #3a4250;
-  border-radius: 6px;
-  padding: 8px;
-  margin-bottom: 12px;
-  text-align: center;
-  box-shadow: inset 0 0 12px rgba(0,0,0,0.6);
-}
-.display-label { font-size: 11px; color: #6e7a8a; letter-spacing: 1px; }
-.display-value {
-  font-family: "Consolas", monospace;
-  font-size: 26px;
-  color: #ff5f3b;
-  text-shadow: 0 0 6px rgba(255,95,59,0.6);
-  margin-top: 2px;
 }
 
 .btn {
   width: 100%;
-  margin-bottom: 6px;
-  padding: 8px 10px;
+  margin-bottom: 4px;
+  padding: 6px 8px;
   border: 1px solid #0a0e15;
-  border-radius: 5px;
+  border-radius: 4px;
   background: linear-gradient(180deg, #3a4456, #232a36);
   color: #fff;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 11px;
   text-align: left;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
-.btn:hover { background: linear-gradient(180deg, #455067, #2a3140); }
-.btn.green { background: linear-gradient(180deg, #2f8f4d, #195a2f); }
-.btn.red   { background: linear-gradient(180deg, #b8392f, #6f1e18); }
+.btn:last-child { margin-bottom: 0; }
+.btn:hover    { background: linear-gradient(180deg, #455067, #2a3140); }
+.btn.green    { background: linear-gradient(180deg, #2f8f4d, #195a2f); }
+.btn.red      { background: linear-gradient(180deg, #b8392f, #6f1e18); }
+.btn.disabled { opacity: 0.5; cursor: not-allowed; }
+.btn.small    { padding: 5px 7px; font-size: 11px; }
 
-.row { display: flex; gap: 6px; }
-.row .btn { margin-bottom: 6px; }
+.row { display: flex; gap: 4px; }
+.row .btn { margin-bottom: 4px; }
 
 .led {
-  width: 12px; height: 12px;
+  width: 10px; height: 10px;
   border-radius: 50%;
   background: #2a3140;
   border: 1px solid #0a0e15;
-  box-shadow: inset 0 0 4px rgba(0,0,0,0.6);
   flex-shrink: 0;
 }
 .btn.on .led {
   background: #4ee07f;
-  box-shadow: 0 0 8px #4ee07f, inset 0 0 4px #fff;
-}
-.btn.disabled { opacity: 0.5; cursor: not-allowed; }
-
-.group {
-  border: 1px solid #3b4357;
-  border-radius: 6px;
-  padding: 6px 8px;
-  margin: 8px 0;
-  background: rgba(255,255,255,0.02);
-}
-.group-title {
-  font-size: 10px;
-  letter-spacing: 1px;
-  color: #8c98aa;
-  margin-bottom: 4px;
+  box-shadow: 0 0 6px #4ee07f, inset 0 0 3px #fff;
 }
 
-.metric {
-  display: flex;
-  justify-content: space-between;
-  margin: 3px 0;
-  font-size: 12px;
-}
-.metric strong { font-family: "Consolas", monospace; color: #fff; }
-
-/* slider */
+/* sliders compactos */
 .slider-row {
   display: block;
-  font-size: 11px;
+  font-size: 10px;
   color: #cfd6e0;
-  margin: 6px 0 2px;
+  margin: 4px 0 2px;
 }
 .slider-row span {
   color: #ffd166;
@@ -152,91 +209,64 @@ body {
 }
 input[type=range] {
   width: 100%;
-  -webkit-appearance: none;
-  appearance: none;
-  height: 6px;
+  -webkit-appearance: none; appearance: none;
+  height: 5px;
   background: #0c1218;
   border: 1px solid #3a4250;
-  border-radius: 4px;
-  margin-bottom: 6px;
+  border-radius: 3px;
+  margin-bottom: 4px;
   outline: none;
 }
 input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 14px; height: 14px;
+  -webkit-appearance: none; appearance: none;
+  width: 12px; height: 12px;
   background: #ffd166;
   border: 1px solid #0a0e15;
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 0 4px rgba(255,209,102,0.6);
 }
 input[type=range]::-moz-range-thumb {
-  width: 14px; height: 14px;
+  width: 12px; height: 12px;
   background: #ffd166;
   border: 1px solid #0a0e15;
   border-radius: 50%;
   cursor: pointer;
 }
 
-/* sequence step indicators */
-.step {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  margin: 3px 0;
-  color: #b8c0cc;
-}
-.step .dot {
-  width: 9px; height: 9px;
-  border-radius: 50%;
-  background: #2a3140;
-  border: 1px solid #0a0e15;
-  flex-shrink: 0;
-}
-.step.done { color: #88f28a; }
-.step.done .dot { background: #4ee07f; box-shadow: 0 0 6px #4ee07f; }
-.step.active { color: #ffd166; }
-.step.active .dot { background: #ffd166; box-shadow: 0 0 6px #ffd166; }
-
 .hint {
-  margin-top: 8px;
-  padding: 6px 8px;
-  font-size: 11px;
+  padding: 5px 7px;
+  font-size: 10px;
   color: #ffd166;
   background: rgba(255, 209, 102, 0.08);
   border: 1px solid rgba(255, 209, 102, 0.3);
   border-radius: 4px;
-  min-height: 14px;
+  min-height: 28px;
+  margin-top: auto;     /* siempre al fondo */
 }
 
 .ok    { color: #88f28a !important; }
-.alarm { color: #ff7474 !important; animation: blink 0.7s linear infinite; }
-@keyframes blink { 50% { opacity: 0.3; } }
+.alarm { color: #ff7474 !important; }
 
-/* ======== Plant view ======== */
+/* =========================================================
+   PLANT VIEW (centro / derecha)
+   ========================================================= */
 .plant {
-  padding: 12px 16px;
+  padding: 6px;
   background:
     radial-gradient(circle at 30% 20%, rgba(255,255,255,0.6), transparent 60%),
     linear-gradient(180deg, #f4f5f7, #d8dce4);
-}
-.plant h2 {
-  margin: 0 0 6px;
-  font-size: 22px;
-  letter-spacing: 1px;
-  color: #1d2530;
+  overflow: hidden;
 }
 #diagram {
   width: 100%;
-  height: calc(100vh - 60px);
+  height: 100%;
   background: #fbfcfe;
   border: 1px solid #aab1bc;
-  border-radius: 6px;
+  border-radius: 4px;
   box-shadow: inset 0 0 30px rgba(0,0,0,0.05);
 }
 
+/* etiquetas SVG */
 .label { fill: #1d2530; font: bold 13px "Segoe UI", Arial, sans-serif; }
 .label.small { font: 11px "Segoe UI", Arial, sans-serif; font-weight: 600; }
 .display-mini { fill: #ff5f3b; font: bold 14px "Consolas", monospace; }
@@ -294,7 +324,7 @@ input[type=range]::-moz-range-thumb {
 }
 #refriLed.on { fill: #4ee07f; filter: drop-shadow(0 0 4px #4ee07f); }
 
-/* Trampa de vapor: gotita cayendo cuando libera condensado */
+/* Trampa de vapor */
 #trapDrip.on { animation: drip 1.4s linear infinite; }
 @keyframes drip {
   0%   { opacity: 0; transform: translateY(0); }
@@ -302,6 +332,4 @@ input[type=range]::-moz-range-thumb {
   100% { opacity: 0; transform: translateY(20px); }
 }
 
-/* Aguja del manometro PSI */
 #psiNeedle { transform-origin: bottom center; transform-box: fill-box; transition: transform 0.4s; }
-

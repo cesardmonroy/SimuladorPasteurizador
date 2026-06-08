@@ -8,88 +8,97 @@
 </head>
 <body>
   <div class="app">
-    <aside class="panel">
-      <h1>Panel de Control</h1>
 
-      <!-- ===================================================== -->
-      <!-- ZONA 1 - INFORMACION (solo lectura)                    -->
-      <!-- ===================================================== -->
-      <div class="section-header info">INFORMACION</div>
-
-      <div class="display">
-        <div class="display-label">TEMP. CALENTAMIENTO</div>
+    <!-- ============================================================ -->
+    <!-- TOPBAR INFORMATIVO (horizontal, solo lectura)                 -->
+    <!-- ============================================================ -->
+    <header class="topbar">
+      <div class="tile tile-temp">
+        <div class="tile-title">TEMP. CALENTAMIENTO</div>
         <div id="heatDisplay" class="display-value">0.0 &deg;C</div>
       </div>
 
-      <div class="group">
-        <div class="group-title">SECUENCIA DE ARRANQUE</div>
-        <div class="step" id="step1"><span class="dot"></span>1. Energia + Start</div>
-        <div class="step" id="step2"><span class="dot"></span>2. Llenado tanque</div>
-        <div class="step" id="step3"><span class="dot"></span>3. Calefactor (agua caliente)</div>
-        <div class="step" id="step4"><span class="dot"></span>4. Refrigerador</div>
-        <div class="step" id="step5"><span class="dot"></span>5. Bomba de producto</div>
-        <div class="step" id="step6"><span class="dot"></span>6. Producto valido</div>
+      <div class="tile tile-seq">
+        <div class="tile-title">SECUENCIA</div>
+        <div class="steps-horizontal">
+          <div class="step" id="step1"><span class="dot"></span><span class="step-lbl">Start</span></div>
+          <div class="step" id="step2"><span class="dot"></span><span class="step-lbl">Llenado</span></div>
+          <div class="step" id="step3"><span class="dot"></span><span class="step-lbl">Calefactor</span></div>
+          <div class="step" id="step4"><span class="dot"></span><span class="step-lbl">Refrig.</span></div>
+          <div class="step" id="step5"><span class="dot"></span><span class="step-lbl">B.Prod.</span></div>
+          <div class="step" id="step6"><span class="dot"></span><span class="step-lbl">Valido</span></div>
+        </div>
       </div>
 
-      <div class="group">
-        <div class="group-title">LECTURAS DE PROCESO</div>
-        <div class="metric"><span>T. Calentamiento</span><strong id="heatTemp">20.0 C</strong></div>
-        <div class="metric"><span>T. Retencion</span><strong id="holdTemp">20.0 C</strong></div>
-        <div class="metric"><span>T. Salida</span><strong id="outTemp">10.0 C</strong></div>
-        <div class="metric"><span>Tiempo Retencion</span><strong id="holdTime">0.0 s</strong></div>
-        <div class="metric"><span>Presion Vapor</span><strong id="psi">0 PSI</strong></div>
-        <div class="metric"><span>Nivel Pulmon</span><strong id="pulmonLvl">80 %</strong></div>
-        <div class="metric"><span>Mezcla V/A</span><strong>60% / 40%</strong></div>
-        <div class="metric"><span>Trampa Vapor</span><strong id="trapState">CERRADA</strong></div>
-        <div class="metric"><span>Alarma</span><strong id="alarm" class="ok">OK</strong></div>
-        <div class="metric"><span>CIP</span><strong id="cip">N/A</strong></div>
+      <div class="tile tile-grid">
+        <div class="tile-title">LECTURAS</div>
+        <div class="kv-grid">
+          <div>T.Cal</div><strong id="heatTemp">20.0 C</strong>
+          <div>T.Ret</div><strong id="holdTemp">20.0 C</strong>
+          <div>T.Sal</div><strong id="outTemp">10.0 C</strong>
+          <div>t.Ret</div><strong id="holdTime">0.0 s</strong>
+          <div>PSI</div>  <strong id="psi">0</strong>
+          <div>Pulm.</div><strong id="pulmonLvl">80 %</strong>
+        </div>
       </div>
 
-      <div class="group">
-        <div class="group-title">VALVULAS (estado)</div>
-        <div class="metric"><span>V. Producto</span><strong id="vProd">CERRADA</strong></div>
-        <div class="metric"><span>V. Retorno</span><strong id="vRet">CERRADA</strong></div>
-        <div class="metric"><span>V. Desviacion</span><strong id="vDes">CERRADA</strong></div>
+      <div class="tile tile-grid">
+        <div class="tile-title">VALVULAS</div>
+        <div class="kv-grid">
+          <div>Prod.</div> <strong id="vProd">CERR</strong>
+          <div>Retor.</div><strong id="vRet">CERR</strong>
+          <div>Desv.</div> <strong id="vDes">CERR</strong>
+          <div>Trampa</div><strong id="trapState">CERR</strong>
+          <div>Mezcla</div><strong>60/40</strong>
+          <div>CIP</div>   <strong id="cip">N/A</strong>
+        </div>
       </div>
 
-      <div class="group">
-        <div class="group-title">METRICAS DEL LOTE</div>
-        <div class="metric"><span>V. Procesada</span><strong id="mFilled">0.0 L</strong></div>
-        <div class="metric"><span>V. Final</span><strong id="mFinal">0.0 L</strong></div>
-        <div class="metric"><span>V. Recirculada</span><strong id="mRecirc">0.0 L</strong></div>
-        <div class="metric"><span>V. Evaporada</span><strong id="mEvap">0.000 L</strong></div>
-        <div class="metric"><span>V. Holdup linea</span><strong id="mLoss">0.0 L</strong></div>
-        <div class="metric"><span>Rendimiento</span><strong id="mYield">-- %</strong></div>
+      <div class="tile tile-grid">
+        <div class="tile-title">LOTE</div>
+        <div class="kv-grid">
+          <div>V.Proc</div>  <strong id="mFilled">0.0 L</strong>
+          <div>V.Final</div> <strong id="mFinal">0.0 L</strong>
+          <div>V.Recir</div> <strong id="mRecirc">0.0 L</strong>
+          <div>V.Evap</div>  <strong id="mEvap">0.000 L</strong>
+          <div>V.Hold</div>  <strong id="mLoss">0.0 L</strong>
+          <div>Rend.</div>   <strong id="mYield">-- %</strong>
+        </div>
       </div>
 
-      <!-- ===================================================== -->
-      <!-- ZONA 2 - CONTROLES (acciones)                          -->
-      <!-- ===================================================== -->
-      <div class="section-header action">CONTROLES</div>
+      <div class="tile tile-alarm">
+        <div class="tile-title">ESTADO</div>
+        <div id="alarm" class="alarm-big ok">OK</div>
+      </div>
+    </header>
 
-      <div class="group control-group">
-        <div class="group-title">SISTEMA</div>
-        <button id="energyBtn" class="btn">1. Energia: OFF</button>
+    <!-- ============================================================ -->
+    <!-- CONTROLES (columna izquierda, fija, sin scroll)               -->
+    <!-- ============================================================ -->
+    <aside class="panel">
+      <div class="ctrl-block">
+        <div class="ctrl-title">SISTEMA</div>
+        <button id="energyBtn" class="btn">Energia: OFF</button>
         <div class="row">
           <button id="startBtn" class="btn green">Start</button>
-          <button id="stopBtn" class="btn red">Stop</button>
+          <button id="stopBtn"  class="btn red">Stop</button>
         </div>
         <button id="modeBtn" class="btn">Modo: Produccion</button>
       </div>
 
-      <div class="group control-group">
-        <div class="group-title">BOMBAS Y VALVULAS</div>
-        <button id="fillBtn"     class="btn small"><span class="led"></span>V. Llenado tanque</button>
-        <button id="hotPumpBtn"  class="btn small"><span class="led"></span>Calefactor (Bomba Agua)</button>
+      <div class="ctrl-block">
+        <div class="ctrl-title">BOMBAS</div>
+        <button id="fillBtn"     class="btn small"><span class="led"></span>V. Llenado</button>
+        <button id="hotPumpBtn"  class="btn small"><span class="led"></span>Calefactor</button>
         <button id="coldPumpBtn" class="btn small"><span class="led"></span>Refrigerador</button>
         <button id="milkPumpBtn" class="btn small"><span class="led"></span>Bomba Producto</button>
       </div>
 
-      <div class="group control-group">
-        <div class="group-title">CONFIGURACION DEL LOTE</div>
-        <label class="slider-row">Volumen objetivo: <span id="targetVal">50</span> L</label>
+      <div class="ctrl-block">
+        <div class="ctrl-title">LOTE</div>
+        <label class="slider-row">Vol.Obj.: <span id="targetVal">50</span> L</label>
         <input type="range" id="targetSlider" min="10" max="100" step="1" value="50">
-        <label class="slider-row">Caudal bomba: <span id="flowVal">0.50</span> L/s</label>
+        <label class="slider-row">Caudal: <span id="flowVal">0.50</span> L/s</label>
         <input type="range" id="flowSlider" min="0.1" max="1.5" step="0.05" value="0.5">
         <button id="resetBatchBtn" class="btn small">Reiniciar Lote</button>
       </div>
@@ -98,7 +107,6 @@
     </aside>
 
     <main class="plant">
-      <h2>PLANTA PASTEURIZADORA DE LECHE</h2>
       <svg id="diagram" viewBox="0 0 1280 720" role="img" aria-label="Diagrama de pasteurizacion">
 
         <defs>
